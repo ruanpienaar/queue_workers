@@ -1,0 +1,13 @@
+{application, queue_workers,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  gproc
+                 ]},
+  {mod, { queue_workers_app, []}},
+  {env, []}
+ ]}.
