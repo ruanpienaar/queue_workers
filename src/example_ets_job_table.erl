@@ -27,14 +27,14 @@ check_first() ->
         '$end_of_table' ->
             ok;
         _Key ->
-            queue_workers_notify:publish(ets_jobs, new_job),
+            queue_workers_notify:publish(queue_workers_ets_worker, new_job),
             ok
     end.
 
 create(Key, Value) ->
     case ets:insert(?MODULE, {Key, Value}) of
         true ->
-            queue_workers_notify:publish(ets_jobs, new_job),
+            queue_workers_notify:publish(queue_workers_ets_worker, new_job),
             true;
         _ ->
             ok

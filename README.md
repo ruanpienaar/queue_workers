@@ -6,11 +6,17 @@ Supported Job configurable sources:
 - Erlang ETS ( WIP )
 
 ```
-queue_workers_ets:create(key, value)
+example_ets_api:add_job(value).
 ```
 runs:
 ```
-example_ets_job_worker:run_job({key, value})
+example_ets_job_table:create(Key, Value).
+```
+
+Bench run:
+This will create 1Mil entries/jobs.
+```
+example_ets_api:bench().
 ```
 
 - RAbbitMq ( WIP )

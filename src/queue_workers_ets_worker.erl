@@ -14,10 +14,11 @@ start_link(Id, Tbl, WorkerMod) ->
 
 init(Id, Tbl, WorkerMod) ->
     % Check if worker mod has function exported
-    io:format("[~p] init ~p~n", [Id, self()]),
+    % io:format("[~p] init ~p~n", [Id, self()]),
     true = erlang:register(Id, self()),
     process_flag(trap_exit, true),
-    queue_workers_notify:subscribe(ets_jobs),
+    lep_load_spread:add_producer_pid(self()),
+    queue_workers_notify:subscribe({queue_workers_ets_worker, self()}),
     ok = Tbl:check_first(),
     loop(Tbl, WorkerMod).
 
@@ -26,15 +27,18 @@ loop(Tbl, WorkerMod) ->
         new_job ->
             case Tbl:take_first() of
                 [] ->
-                    ok;
+                    lep_load_spread:idle(self());
                 [Job] ->
+                    self() ! new_job,
                     ok = WorkerMod:run_job(Job)
             end,
             loop(Tbl, WorkerMod);
         X ->
             io:format("[~p] Unknown Message ~p~n", [?MODULE, X]),
             loop(Tbl, WorkerMod)
+
+    % Maybe not , maybe needed ??
     % after
-    %    100 ->
-    % Set the worker state to idle
+    %     5 ->
+    %         lep_load_spread:idle(Pid)
     end.

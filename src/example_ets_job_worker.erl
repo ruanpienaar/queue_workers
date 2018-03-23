@@ -4,7 +4,10 @@
 % Worker mod
 % Make into behaviour
 
-run_job(_Payload) ->
+run_job({Key, Value}) ->
+    math:cos(Key),
+    math:sin(Key),
+    math:tan(Key),
     timer:sleep(125),
     % io:format("JOB PAYLOAD [~p]~n", [Payload]).
     ok.
