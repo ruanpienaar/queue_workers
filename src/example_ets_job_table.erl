@@ -7,6 +7,7 @@
     init/0,
     take_first/0,
     check_first/0,
+    new/2,
     create/2,
     read/1,
     update/2,
@@ -31,13 +32,16 @@ check_first() ->
             ok
     end.
 
+new(Key, Value) ->
+    {Key, Value}.
+
 create(Key, Value) ->
     case ets:insert(?MODULE, {Key, Value}) of
         true ->
             queue_workers_notify:publish(queue_workers_ets_worker, new_job),
             true;
         _ ->
-            ok
+            error
     end.
 
 read(Key) ->

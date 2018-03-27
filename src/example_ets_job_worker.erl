@@ -5,9 +5,6 @@
 % Make into behaviour
 
 run_job({Key, Value}) ->
-    math:cos(Key),
-    math:sin(Key),
-    math:tan(Key),
-    timer:sleep(125),
-    % io:format("JOB PAYLOAD [~p]~n", [Payload]).
-    ok.
+    timer:sleep(5),
+    io:format("JOB PAYLOAD [~p]~n", [{Key, Value}]),
+    Value.

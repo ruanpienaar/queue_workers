@@ -5,18 +5,14 @@ Supported Job configurable sources:
 
 - Erlang ETS ( WIP )
 
-```
-example_ets_api:add_job(value).
-```
-runs:
-```
-example_ets_job_table:create(Key, Value).
+Async job execution:
+```Erlang
+queue_workers_ets_worker:add_job(value).
 ```
 
-Bench run:
-This will create 1Mil entries/jobs.
-```
-example_ets_api:bench().
+Sync job with reply:
+```Erlang
+queue_workers_ets_worker:do_job(Value).
 ```
 
 - RAbbitMq ( WIP )
