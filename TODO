@@ -1,0 +1,4 @@
+ ☐ cleanup code just a little bit ( comments, dead code etc )
+ ☐ fix up the demo/test functions ?
+ ☐ read up on how you could benchmark it ?
+ ☐ try and use tempo, in front of, or after queue worker, to perform work at a certain rate ?
