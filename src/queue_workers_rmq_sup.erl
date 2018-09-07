@@ -1,0 +1,1 @@
+-module(queue_workers_rmq_sup).

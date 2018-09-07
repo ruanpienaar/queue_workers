@@ -27,7 +27,7 @@ init([]) ->
     % TODO: start workers per type in sys config
     % Hard coding ETS for now
     Children = [
-        ?CHILD(lep_load_spread, worker, []),
+        % ?CHILD(lep_load_spread, worker, []),
         ?CHILD(queue_workers_ets_sup, supervisor, [])
     ],
     {ok, { {one_for_one, 5, 10},

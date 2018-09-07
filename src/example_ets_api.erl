@@ -1,10 +1,22 @@
 -module(example_ets_api).
 
+%% API
+-export([
+    add_job/1
+]).
+
+%% Bench
 -export([
     sync_bench/0
     % bench/1,
     % add_job/1
 ]).
+
+%% API
+add_job(Job) ->
+    queue_worker_ets_worker:add_job(Job).
+
+%% Bench
 
 % These were very basic calculated times with a damn real life stop watch :D
 % example_ets_job_worker slept for 125 Ms

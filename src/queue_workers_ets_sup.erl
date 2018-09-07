@@ -17,7 +17,7 @@ start_link() ->
 init({}) ->
     % TODO: create child item from sys.config ( data_sources -> ets )
     try_db_init([example_ets_job_table]),
-    Children = [ child_spec(list_to_atom("queue_workers_ets_worker_"++integer_to_list(X))) || X <- lists:seq(1, 5000) ],
+    Children = [ child_spec(list_to_atom("queue_workers_ets_worker_"++integer_to_list(X))) || X <- lists:seq(1, 1) ],
     RestartStrategy = {one_for_one, 5, 10},
     {ok, {RestartStrategy, Children}}.
 
