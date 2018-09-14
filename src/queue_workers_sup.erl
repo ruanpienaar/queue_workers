@@ -25,22 +25,22 @@ start_link() ->
 init([]) ->
     {ok, DataSources} = application:get_env(queue_workers, data_sources),
     Children = lists:foldl(fun
-        ({Type = ets, [{Name, Opts}]}, Acc) ->
-            append_if_valid(Name, Type, Opts, Acc);
+        ({Type = ets, [Opts]}, Acc) ->
+            append_if_valid(Type, Opts, Acc);
         ({_Type = rabbitmq, [{_Name, _Opts}]}, Acc) ->
             % append_if_valid(Name, Type, Opts, Acc)
             Acc
     end, [], DataSources),
     {ok, { {one_for_one, 5, 10}, Children} }.
 
-append_if_valid(Name, Type, Opts, Acc) ->
+append_if_valid(Type, Opts, Acc) ->
     case valid_opts(ets, Opts) of
         true ->
-            [ ?CHILD(queue_workers_ets_sup, supervisor, [Name, Opts]) | Acc ];
+            [ ?CHILD(queue_workers_ets_sup, supervisor, [Opts]) | Acc ];
 
         false ->
-            io:format("Dropped ~p spec for Type ~p Opts ~p\n", 
-                [Name, Type, Opts]),
+            io:format("Dropped spec for Type ~p Opts ~p\n",
+                [Type, Opts]),
             Acc
     end.
 

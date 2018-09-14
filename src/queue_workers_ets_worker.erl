@@ -7,20 +7,24 @@
 
 -define(SERVER, ?MODULE).
 
-start_link(Id, WorkerMod) ->
-    gen_server:start_link({local, Id}, ?MODULE, {WorkerMod}, []).
+start_link(Name, WorkerMod) ->
+    gen_server:start_link({local, Name}, ?MODULE, {WorkerMod}, []).
 
 init({WorkerMod}) ->
     {ok, #{ worker_mod => WorkerMod }}.
 
 handle_call({new_job, Job}, _From, #{ worker_mod := WorkerMod } = State) ->
     % io:format("Worker ~p doing Job ~p\n", [self(), Job]),
-    ok = WorkerMod:run_job(Job),
-    {reply, ok, State};
+    {reply, WorkerMod:run_job(Job), State};
 handle_call(Request, _From, State) ->
     io:format("~p handle_call ~p\n", [?MODULE, Request]),
     {reply, {error, unknown_call}, State}.
 
+handle_cast({sync_new_job, TblName, From, Job}, #{ worker_mod := WorkerMod } = State) ->
+    JobResult = WorkerMod:run_job(Job),
+    % gen_server:cast(TblName, {sync_new_job_results, TblName, From, JobResult}),
+    TblName ! {sync_new_job_results, TblName, From, JobResult},
+    {noreply, State};
 handle_cast(Msg, State) ->
     io:format("~p handle_cast ~p\n", [?MODULE, Msg]),
     {noreply, State}.
@@ -34,14 +38,6 @@ terminate(_Reason, _State) ->
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
-
-
-
-
-
-
-
-
 
 
 % -export([

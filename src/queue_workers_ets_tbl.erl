@@ -1,4 +1,5 @@
 -module(queue_workers_ets_tbl).
+%% TODO: rename to queue_workers_ets_queue_tbl
 
 -include_lib("stdlib/include/qlc.hrl").
 
@@ -6,8 +7,9 @@
     init/1,
     % take_and_stamp_first/1,
     take_first/1,
-    check_first/1,
+    % check_first/1,
     create/2,
+    create_and_notify/2,
     read/2,
     % update/3,
     delete/2,
@@ -42,27 +44,34 @@ take_first(TblName) ->
 %     end.
 
 % Used when a worker restarts
-check_first(TblName) ->
-    case ets:first(TblName) of
-        '$end_of_table' ->
-            ok;
-        _Key ->
-            queue_workers_notify:publish(TblName, new_job),
-            ok
-    end.
+% check_first(TblName) ->
+%     case ets:first(TblName) of
+%         '$end_of_table' ->
+%             ok;
+%         _Key ->
+%             queue_workers_notify:publish(TblName, new_job),
+%             ok
+%     end.
 
 create(TblName, Job) ->
     Obj = {
         erlang:unique_integer([monotonic]),
-        Job,
-        false
+        Job
     },
     case ets:insert(TblName, Obj) of
         true ->
+            true;
+        X ->
+            X
+    end.
+
+create_and_notify(TblName, Job) ->
+    case create(TblName, Job) of
+        true ->
             queue_workers_notify:publish(TblName, new_job),
             true;
-        _ ->
-            error
+        X ->
+            X
     end.
 
 read(TblName, Key) ->
