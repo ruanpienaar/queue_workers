@@ -15,6 +15,12 @@ Sync job with reply:
 queue_workers_ets_worker:do_job(Value).
 ```
 
+Running from start script:
+```
+$ ./start-dev.sh
+erl> application:ensure_all_started(queue_workers).
+```
+
 - RAbbitMq ( WIP )
 - Mnesia ( WIP )
 - Sqlite ( WIP )
