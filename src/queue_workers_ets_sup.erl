@@ -23,7 +23,14 @@ start_link(Opts) ->
 % create_child,
 
 init({SupName, TblName, Opts}) ->
-    SupName = ets:new(SupName, [named_table, public, ordered_set]),
+    % TODO: create sync and async table.
+    %       just do check_first on async table
+    %       and build something to check expired jobs
+    SupName = ets:new(SupName, [named_table, public, ordered_set]), 
+
+    SupNameSync = ets:new(list_to_atom(atom_to_list(SupName)++"_sync"), [named_table, public, ordered_set]),
+    SupNameASync = ets:new(list_to_atom(atom_to_list(SupName)++"_async"), [named_table, public, ordered_set]),
+
     {worker_count, WorkerCount} = lists:keyfind(worker_count, 1, Opts),
     {worker_module, WorkerMod} = lists:keyfind(worker_module, 1, Opts),
     ok = try_db_init(TblName),

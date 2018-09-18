@@ -13,5 +13,4 @@ queue_job(TblName, Job) ->
 %%      where the job will be queued and the client will wait for the response/timeout
 %% @end
 run_job(TblName, Job) ->
-    true = queue_workers_ets_tbl:create(TblName, Job),
     gen_server:call(TblName, {run_job, Job}).

@@ -5,12 +5,12 @@ Supported Job configurable sources:
 
 - Erlang ETS ( WIP )
 
-Async job execution:
+Async job execution: ( use when you don't need a reply, and the order is not required )
 ```Erlang
 queue_workers_ets_worker:add_job(value).
 ```
 
-Sync job with reply:
+Sync job with reply: ( use when a reply and order is required )
 ```Erlang
 queue_workers_ets_worker:do_job(Value).
 ```

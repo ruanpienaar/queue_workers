@@ -20,10 +20,10 @@ handle_call(Request, _From, State) ->
     io:format("~p handle_call ~p\n", [?MODULE, Request]),
     {reply, {error, unknown_call}, State}.
 
-handle_cast({sync_new_job, TblName, From, Job}, #{ worker_mod := WorkerMod } = State) ->
+handle_cast({sync_new_job, TblName, From, Key, Job}, #{ worker_mod := WorkerMod } = State) ->
     JobResult = WorkerMod:run_job(Job),
     % gen_server:cast(TblName, {sync_new_job_results, TblName, From, JobResult}),
-    TblName ! {sync_new_job_results, TblName, From, JobResult},
+    TblName ! {sync_new_job_results, TblName, From, Key, JobResult},
     {noreply, State};
 handle_cast(Msg, State) ->
     io:format("~p handle_cast ~p\n", [?MODULE, Msg]),
