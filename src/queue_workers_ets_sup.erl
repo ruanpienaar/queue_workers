@@ -36,6 +36,7 @@ init({SupName, TblName, Opts}) ->
     ok = try_db_init(TblName),
     Children = [
         begin
+            % TODO: remove Atom generation
             Id = list_to_atom(atom_to_list(TblName)++"_worker_"++integer_to_list(X)),
             true = ets:insert(SupName, {{TblName, X}, Id}),
             child_spec(Id, WorkerMod)

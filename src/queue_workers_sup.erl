@@ -9,7 +9,7 @@
 -export([init/1]).
 
 %% Helper macro for declaring children of supervisor
--define(CHILD(I, Type, Args), {I, {I, start_link, Args}, permanent, 5000, Type, [I]}).
+-define(CHILD(I, Mod, Type, Args), {I, {Mod, start_link, Args}, permanent, 5000, Type, [I]}).
 
 %% ===================================================================
 %% API functions
@@ -36,8 +36,8 @@ init([]) ->
 append_if_valid(Type, Opts, Acc) ->
     case valid_opts(ets, Opts) of
         true ->
-            [ ?CHILD(queue_workers_ets_sup, supervisor, [Opts]) | Acc ];
-
+            {table_name, Tbl} = lists:keyfind(table_name, 1, Opts),
+            [ ?CHILD(Tbl, queue_workers_ets_sup, supervisor, [Opts]) | Acc ];
         false ->
             io:format("Dropped spec for Type ~p Opts ~p\n",
                 [Type, Opts]),
@@ -46,7 +46,9 @@ append_if_valid(Type, Opts, Acc) ->
 
 valid_opts(Type, Opts) ->
     ReqOpts = required_opts_per_type(Type),
-    lists:all(fun(O) -> lists:keyfind(O, 1, Opts) =/= false end, ReqOpts).
+    lists:all(fun(O) -> 
+        lists:keyfind(O, 1, Opts) =/= false 
+    end, ReqOpts).
 
 required_opts_per_type(ets) ->
     [table_name, worker_module, worker_count].
